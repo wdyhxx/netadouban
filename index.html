@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="制作豆瓣小组帖子风格的 AO3 内容，并导出 HTML 与 Work Skin CSS。">
+  <title>Douban AO3 Generator</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23007f5f'/%3E%3Cpath d='M17 16h30v32H17z' fill='none' stroke='white' stroke-width='5'/%3E%3Cpath d='M25 26h14M25 35h14' stroke='white' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand"><span class="brand-mark">豆</span><span>Douban AO3 Generator</span></div>
+    <div class="header-actions">
+      <span class="save-state" id="saveState">已自动保存</span>
+      <button class="icon-button" id="resetProject" title="新建项目" aria-label="新建项目">↻</button>
+      <button class="primary" data-tab-target="export">导出作品</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="editor-pane">
+      <nav class="tabs" aria-label="编辑步骤">
+        <button class="tab active" data-tab="post">帖子</button>
+        <button class="tab" data-tab="users">用户 <span id="userCountBadge">0</span></button>
+        <button class="tab" data-tab="export">导出</button>
+      </nav>
+
+      <div class="panel active" id="panel-post">
+        <section class="editor-card">
+          <div class="section-heading"><div><span class="eyebrow">MAIN POST</span><h2>主楼</h2></div></div>
+          <div class="form-grid two">
+            <label>发言用户<select id="postAuthor"></select></label>
+            <label>发布时间<input id="postTime" type="text" placeholder="2026-09-11 00:40"></label>
+          </div>
+          <label>帖子标题<input id="postTitle" type="text" placeholder="输入帖子标题"></label>
+          <div class="field-label-row"><span>帖子正文</span><span class="hint">文字与图片可自由排序</span></div>
+          <div id="blocksEditor" class="stack"></div>
+          <div class="add-row">
+            <button class="secondary" id="addTextBlock">＋ 添加文字</button>
+            <button class="secondary" id="addImageBlock">＋ 添加图片</button>
+          </div>
+          <div class="option-box">
+            <label class="check"><input id="antiRepost" type="checkbox"><span>显示防搬运提示</span></label>
+            <label class="check"><input id="showNav" type="checkbox"><span>显示主楼导航栏</span></label>
+          </div>
+          <fieldset class="reply-count-field">
+            <legend>显示回复数</legend>
+            <label class="radio"><input name="countMode" value="auto" type="radio"> 自动计算</label>
+            <label class="radio"><input name="countMode" value="manual" type="radio"> 手动填写</label>
+            <input id="manualCount" type="number" min="0" aria-label="手动回复数">
+          </fieldset>
+        </section>
+
+        <section class="comments-section">
+          <div class="section-heading comments-title"><div><span class="eyebrow">COMMENTS</span><h2>回复 <span id="commentCount">0</span></h2></div><button class="primary small" id="addComment">＋ 添加回复</button></div>
+          <div id="commentsEditor" class="stack"></div>
+          <button class="add-comment-wide" id="addCommentBottom">＋ 添加一条新回复</button>
+        </section>
+      </div>
+
+      <div class="panel" id="panel-users">
+        <section class="editor-card">
+          <div class="section-heading"><div><span class="eyebrow">CAST</span><h2>用户管理</h2></div><button class="primary small" id="addUser">＋ 新建用户</button></div>
+          <p class="intro">建立一次，主楼与回复都可复用头像、用户名和标签。</p>
+          <div id="usersEditor" class="stack"></div>
+        </section>
+      </div>
+
+      <div class="panel" id="panel-export">
+        <section class="editor-card export-card">
+          <div><span class="eyebrow">AO3 READY</span><h2>导出</h2></div>
+          <div class="export-block"><div class="field-label-row"><span>AO3 HTML</span><button class="copy-button" data-copy="html">复制 HTML</button></div><textarea id="htmlOutput" readonly spellcheck="false"></textarea></div>
+          <div class="export-block"><div class="field-label-row"><span>Work Skin CSS</span><button class="copy-button" data-copy="css">复制 CSS</button></div><textarea id="cssOutput" readonly spellcheck="false"></textarea></div>
+          <div class="project-actions"><div><strong>项目数据</strong><p>保存备份，或在另一台设备继续编辑。</p></div><div><button class="secondary" id="saveProject">保存项目</button><button class="secondary" id="openProject">打开项目</button><input id="projectFile" type="file" accept="application/json,.json" hidden></div></div>
+        </section>
+      </div>
+    </section>
+
+    <aside class="preview-pane">
+      <div class="preview-heading"><div><span class="live-dot"></span>实时预览</div><span>390px</span></div>
+      <div class="phone-shell"><div class="phone-speaker"></div><div id="preview" class="phone-screen"></div></div>
+    </aside>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
